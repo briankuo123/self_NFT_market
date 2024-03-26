@@ -2,6 +2,7 @@ import { Box, styled } from '@mui/material';
 import { MatxLogo } from 'app/components';
 import useSettings from 'app/hooks/useSettings';
 import { Span } from './Typography';
+import pokemon from 'app/pic/pokemon.png'
 
 const BrandRoot = styled(Box)(() => ({
   display: 'flex',
@@ -24,9 +25,10 @@ const Brand = ({ children }) => {
   return (
     <BrandRoot>
       <Box display="flex" alignItems="center">
-        <MatxLogo />
+        {/* <MatxLogo /> */}
+        <img src={pokemon} width='50px' height='24px'></img>
         <StyledSpan mode={mode} className="sidenavHoverShow">
-          Matx
+          寶可夢NFT
         </StyledSpan>
       </Box>
 

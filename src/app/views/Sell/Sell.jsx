@@ -7,7 +7,7 @@ import { contractAddress, ERC721JsonAbi } from 'app/contract/ERC721/ERC721.jsx';
 import {ogerponContractAddress, ogerponAbi} from 'app/contract/ogerponContractValue/ogerpon.jsx'
 import { ethers } from 'ethers';
 import { useEthers } from '@usedapp/core';
-import NFTCardList from 'app/components/nft/cardList';
+import NFTCardListSell from 'app/components/nft/cardListSell';
 import flex from 'app/css/flex.css';
 import axios from 'axios'
 import Box from '@mui/material/Box';
@@ -42,7 +42,7 @@ const H4 = styled('h4')(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const Analytics = () => {
+const Sell = () => {
   const { palette } = useTheme();
 
   // return (
@@ -113,6 +113,7 @@ const Analytics = () => {
   }
 
   const [tokenOwnerList, setTokenOwnerList] = useState([])
+  const [tokenForSellList, setTokenForSellList] = useState([])
   const [tokenURIList, setTokenURIList] = useState([])
   const [ownList, setOwnList] = useState([])
   const [next, setNext] = useState(false)
@@ -125,6 +126,22 @@ const Analytics = () => {
         await tokenContract.methods.ownerOf(i).call().then((response2) => {
           console.log(response2)
           tokenOwnerList.push(response2)
+        }).catch(err2 => {
+          console.log(err2)
+        })
+      }
+    }).catch(err => {
+      console.log(err)
+    })
+
+  }
+
+  function getForSell() {
+    tokenContract.methods._getTokenCount().call().then(async response => {
+      for(var i = 0; i< response; i++) {
+        await tokenContract.methods._getForSell(i).call().then((response2) => {
+          console.log(response2)
+          tokenForSellList.push(response2)
         }).catch(err2 => {
           console.log(err2)
         })
@@ -158,7 +175,7 @@ const Analytics = () => {
       console.log("in getInfo")
       for(var i = 0; i < tokenOwnerList.length; i++) {
         console.log("length: "+tokenOwnerList.length)
-        if(tokenOwnerList[i] == account) {
+        if(tokenOwnerList[i] !== account && tokenForSellList[i] == true) {
           const response = await fetch(tokenURIList[i])
           const data = await response.json()
           const inputData = {"id": i, "pic": data.image, "name": data.name, "description": data.description}
@@ -174,6 +191,7 @@ const Analytics = () => {
 
   useEffect(() => { 
     getToken()
+    getForSell()
     getURI()
   },[])
 
@@ -195,7 +213,8 @@ const Analytics = () => {
   return (
     <>
       <div>
-        <h2 className='pageTitle'>您好 帳戶: { account }</h2>
+        <h1 className='pageTitle' >NFT交易區</h1>
+        <h2 className='pageTitle' >帳戶: { account }</h2>
       </div>
       <Box className='NFTCard' sx={{ minWidth: 120, maxWidth: 300 }}>
         <FormControl fullWidth>
@@ -222,7 +241,7 @@ const Analytics = () => {
           ?
           <></>
           :
-          <NFTCardList ownList={ownList}></NFTCardList> 
+          <NFTCardListSell ownList={ownList}></NFTCardListSell> 
         }
         {/* <NFTCardList tokenOwnerList = {tokenOwnerList} tokenURIList = {tokenURIList}></NFTCardList> */}
       </div>
@@ -231,4 +250,4 @@ const Analytics = () => {
   )
 };
 
-export default Analytics;
+export default Sell;

@@ -18,6 +18,10 @@ const AppEchart = Loadable(lazy(() => import('app/views/charts/echarts/AppEchart
 // dashboard page
 const Analytics = Loadable(lazy(() => import('app/views/dashboard/Analytics')));
 
+const MintPage = Loadable(lazy(() => import('app/views/Mint/Mint')))
+
+const SellPage = Loadable(lazy(() => import('app/views/Sell/Sell')))
+
 const routes = [
   {
     element: (
@@ -32,6 +36,17 @@ const routes = [
         path: '/dashboard/default',
         element: <Analytics />,
         auth: authRoles.admin
+      },
+
+      {
+        path: '/mint',
+        element: <MintPage />,
+        auth: authRoles.guest
+      },
+      {
+        path:'/sell',
+        element: <SellPage />,
+        auth: authRoles.guest
       },
 
       // e-chart rooute

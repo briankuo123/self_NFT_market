@@ -1,0 +1,10 @@
+.flex-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.contractButton {
+    display: flex;
+    flex-direction: row-reverse;
+}

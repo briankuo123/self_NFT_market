@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Avatar,
@@ -9,11 +9,13 @@ import {
   useMediaQuery,
   Box,
   styled,
-  useTheme
+  useTheme,
+  Container,
+  Button,
 } from '@mui/material';
 
 import { MatxMenu, MatxSearchBox } from 'app/components';
-import { themeShadows } from 'app/components/MatxTheme/themeColors';
+import { themeColors, themeShadows } from 'app/components/MatxTheme/themeColors';
 import { NotificationProvider } from 'app/contexts/NotificationContext';
 import useAuth from 'app/hooks/useAuth';
 import useSettings from 'app/hooks/useSettings';
@@ -22,6 +24,50 @@ import { topBarHeight } from 'app/utils/constant';
 import { Span } from '../../Typography';
 import NotificationBar from '../../NotificationBar/NotificationBar';
 import ShoppingCart from '../../ShoppingCart';
+import { ChainId, Goerli, useEthers } from '@usedapp/core';
+
+const ethereum = window.ethereum;
+
+const ConnectButton = () => {
+  const {activateBrowserWallet, account, deactivate, chainId, switchNetwork} = useEthers()
+
+  useEffect(() => {
+    if(window.ethereum) {
+      window.ethereum.on('accountsChanged', () => {
+        window.location.reload();
+      })
+    }
+  },[])
+
+  if(account) {
+    // if(window.ethereum.networkVersion == 33){
+      return (
+        <StyledButton variant="contained" color="error" onClick={deactivate}>
+          Disconnect Metamask
+        </StyledButton>
+      )
+    // }
+    // else {
+    //   return (
+    //     <StyledButton variant="contained" color="error" onClick={() => switchNetwork(33)}>
+    //       Switch Network
+    //     </StyledButton>
+    //   )
+    // }
+    
+  }
+  else {
+    return (
+      <StyledButton variant="contained" color="info" onClick={activateBrowserWallet}>
+        Connect to Metamask
+      </StyledButton>
+    )
+  }
+}
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  margin: theme.spacing(1),
+}));
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
   color: theme.palette.text.primary
@@ -102,6 +148,22 @@ const Layout1Topbar = () => {
     updateSidebarMode({ mode });
   };
 
+  function metamaskButton() {
+    // console.log(ethereum)
+    if(ethereum == null){
+      return (
+        <StyledButton variant="contained" color="error" href='https://metamask.io/download/'>
+          Install Metamask
+        </StyledButton>
+      )
+    }
+    else {
+      return (
+        <ConnectButton/>
+      )
+    }
+  }
+
   return (
     <TopbarRoot>
       <TopbarContainer>
@@ -110,7 +172,7 @@ const Layout1Topbar = () => {
             <Icon>menu</Icon>
           </StyledIconButton>
 
-          <IconBox>
+          {/* <IconBox>
             <StyledIconButton>
               <Icon>mail_outline</Icon>
             </StyledIconButton>
@@ -122,19 +184,21 @@ const Layout1Topbar = () => {
             <StyledIconButton>
               <Icon>star_outline</Icon>
             </StyledIconButton>
-          </IconBox>
+          </IconBox> */}
         </Box>
 
         <Box display="flex" alignItems="center">
           <MatxSearchBox />
 
-          <NotificationProvider>
+          {/* <NotificationProvider>
             <NotificationBar />
           </NotificationProvider>
 
-          <ShoppingCart />
+          <ShoppingCart /> */}
 
-          <MatxMenu
+          {metamaskButton()}
+
+          {/* <MatxMenu
             menuButton={
               <UserMenu>
                 <Hidden xsDown>
@@ -169,7 +233,7 @@ const Layout1Topbar = () => {
               <Icon> power_settings_new </Icon>
               <Span> Logout </Span>
             </StyledItem>
-          </MatxMenu>
+          </MatxMenu> */}
         </Box>
       </TopbarContainer>
     </TopbarRoot>

@@ -1,5 +1,7 @@
 export const navigations = [
-  { name: 'Dashboard', path: '/dashboard/default', icon: 'dashboard' },
+  { name: '首頁', path: '/dashboard/default', icon: 'dashboard' },
+  { name: '抽卡', path: '/mint', icon: 'attach_money' },
+  { name: '交易', path: '/sell', icon: 'attach_money' },
   { label: 'PAGES', type: 'label' },
   {
     name: 'Session/Auth',
